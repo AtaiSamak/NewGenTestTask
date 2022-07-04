@@ -1,12 +1,5 @@
-type Price = [number | null, number | null];
-
-type Course = {
-    name: string;
-    prices: Price;
-};
-
 // Список курсов
-let courses: Course[] = [
+var courses = [
     { name: "Courses in England", prices: [0, 100] },
     { name: "Courses in Germany", prices: [500, null] },
     { name: "Courses in Italy", prices: [100, 200] },
@@ -16,45 +9,46 @@ let courses: Course[] = [
     { name: "Courses in Kazakhstan", prices: [56, 324] },
     { name: "Courses in France", prices: [null, null] },
 ];
-
 // Варианты цен (фильтры), которые ищет пользователь
-let requiredRange1: Price = [null, 200];
-let requiredRange2: Price = [100, 350];
-let requiredRange3: Price = [200, null];
-
-const isRangeToInfinity = (num: number, [from, until]: Price) =>
-    until === null ? true : until >= num;
-
-const isRange = ([reqFrom, reqUntil]: number[], [from, until]: Price) => {
-    if (from === null && until === null) return true;
-    if (until === null) return (from ? from : 0) <= reqUntil;
-    if (from === null) return until >= reqFrom;
-    return (
-        (from >= reqFrom && from <= reqUntil) ||
-        (until >= reqFrom && until <= reqUntil)
-    );
+var requiredRange1 = [null, 200];
+var requiredRange2 = [100, 350];
+var requiredRange3 = [200, null];
+var isRangeToInfinity = function (num, _a) {
+    var from = _a[0], until = _a[1];
+    return until === null ? true : until >= num;
 };
-
-const filterByPrice = (courses: Course[], [from, until]: Price) => {
-    if (from === null && until === null) return courses; // Первый случай
+var isRange = function (_a, _b) {
+    var reqFrom = _a[0], reqUntil = _a[1];
+    var from = _b[0], until = _b[1];
+    if (from === null && until === null)
+        return true;
+    if (until === null)
+        return (from ? from : 0) <= reqUntil;
+    if (from === null)
+        return until >= reqFrom;
+    return ((from >= reqFrom && from <= reqUntil) ||
+        (until >= reqFrom && until <= reqUntil));
+};
+var filterByPrice = function (courses, _a) {
+    var from = _a[0], until = _a[1];
+    if (from === null && until === null)
+        return courses; // Первый случай
     return until === null
-        ? courses.filter(({ prices }) =>
-              isRangeToInfinity(from ? from : 0, prices)
-          ) // Второй случай
-        : courses.filter(({ prices }) =>
-              isRange([from ? from : 0, until], prices)
-          ); // Третий случай
+        ? courses.filter(function (_a) {
+            var prices = _a.prices;
+            return isRangeToInfinity(from ? from : 0, prices);
+        }) // Второй случай
+        : courses.filter(function (_a) {
+            var prices = _a.prices;
+            return isRange([from ? from : 0, until], prices);
+        }); // Третий случай
 };
-
 console.log(filterByPrice(courses, requiredRange1));
 console.log(filterByPrice(courses, requiredRange2));
 console.log(filterByPrice(courses, requiredRange3));
-
 // У на есть три случая исхода событий:
-
 // Первый случай - когда у нас диапазон пользователя от нуля до бесконечности [null, null]
 // В этом случае мы возвращаем массив со всеми данными без фильтрации.
-
 // Второй случай - у диапазона пользователя есть начало и нет конца [100, null]
 // В этом случае я использую функцию isRangeToInfinity для фильтрации:
 // Возвращает true:
@@ -62,7 +56,6 @@ console.log(filterByPrice(courses, requiredRange3));
 // 2) диапазон курса имеет конец тогда начало,
 // которое указал пользователь должен быть в диапазоне курса
 // [50, 99] = [100, null] => false
-
 // Третий случай - диапазон(пользователя) указан точно [100, 200] т.е. есть начало и конец
 // Тут я использую функция isRange для фильтрации:
 // Возвращает true:
